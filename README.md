@@ -1,5 +1,24 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment Configuration
+
+Before running the application, you need to create a `.env.local` file in the root directory with the following configuration:
+
+```env
+# Backend API Configuration
+NEXT_PUBLIC_BASE_URL=http://localhost:8080
+NEXT_PUBLIC_PREFIX_API=
+
+# OAuth2 Configuration
+NEXT_PUBLIC_OAUTH_CLIENT_ID=ecommerce-app
+```
+
+**Important Notes:**
+- `NEXT_PUBLIC_BASE_URL` must point to your backend server (not the Next.js frontend)
+- The backend server typically runs on port `8080` (check your backend `application.properties`)
+- The frontend Next.js server runs on port `3000` by default
+- If `NEXT_PUBLIC_BASE_URL` is not set or points to the wrong server, OAuth login will fail with 404 errors
+
 ## Getting Started
 
 First, run the development server:
