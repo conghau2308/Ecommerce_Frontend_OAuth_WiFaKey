@@ -240,14 +240,14 @@ export class BaseService {
             }
         }
 
-        if (status === 403) {
-            this.clearTokenCache();
-            await AuthStorageService.clearAll();
+        // if (status === 403) {
+        //     this.clearTokenCache();
+        //     await AuthStorageService.clearAll();
 
-            if (typeof window !== 'undefined') {
-                window.location.href = '/auth';
-            }
-        }
+        //     if (typeof window !== 'undefined') {
+        //         window.location.href = '/auth';
+        //     }
+        // }
 
         if (status >= 500 && typeof window !== 'undefined') {
             window.location.href = '/error';

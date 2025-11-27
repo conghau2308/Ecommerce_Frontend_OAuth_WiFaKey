@@ -14,7 +14,7 @@ export interface UseAuthReturn {
     refreshProfile: () => Promise<void>;
     refreshUser: () => Promise<void>;
     logout: () => Promise<void>;
-    updatePreferences: (preferences: Record<string, any>) => Promise<void>;
+    updatePreferences: (preferences: Record<string, unknown>) => Promise<void>;
 }
 
 // Create Auth Context
@@ -35,22 +35,22 @@ function useAuth(): UseAuthReturn {
             if (stored?.accessToken) {
                 // Try to load user profile
                 try {
-                    const profileData = await unitOfWork.authenticationService.getProfile();
-                    setProfile(profileData);
-                    if (profileData) {
-                        setUser({
-                            email: profileData.email,
-                            userId: profileData.userId,
-                            name: profileData.name,
-                            preferences: profileData.preferences,
-                        });
-                    }
+                    // const profileData = await unitOfWork.authenticationService.getProfile();
+                    // setProfile(profileData);
+                    // if (profileData) {
+                    //     setUser({
+                    //         email: profileData.email,
+                    //         userId: profileData.userId,
+                    //         name: profileData.name,
+                    //         preferences: profileData.preferences,
+                    //     });
+                    // }
                 } catch (error) {
                     console.error('Failed to load profile:', error);
                     // Try to load user info instead
                     try {
-                        const userData = await unitOfWork.userService.getCurrentUser();
-                        setUser(userData);
+                        // const userData = await unitOfWork.userService.getCurrentUser();
+                        // setUser(userData);
                     } catch (userError) {
                         console.error('Failed to load user:', userError);
                     }
@@ -69,16 +69,16 @@ function useAuth(): UseAuthReturn {
 
     const refreshProfile = useCallback(async () => {
         try {
-            const profileData = await unitOfWork.authenticationService.getProfile();
-            setProfile(profileData);
-            if (profileData) {
-                setUser({
-                    email: profileData.email,
-                    userId: profileData.userId,
-                    name: profileData.name,
-                    preferences: profileData.preferences,
-                });
-            }
+            // const profileData = await unitOfWork.authenticationService.getProfile();
+            // setProfile(profileData);
+            // if (profileData) {
+            //     setUser({
+            //         email: profileData.email,
+            //         userId: profileData.userId,
+            //         name: profileData.name,
+            //         preferences: profileData.preferences,
+            //     });
+            // }
         } catch (error) {
             console.error('Failed to refresh profile:', error);
             throw error;
@@ -87,8 +87,8 @@ function useAuth(): UseAuthReturn {
 
     const refreshUser = useCallback(async () => {
         try {
-            const userData = await unitOfWork.userService.getCurrentUser();
-            setUser(userData);
+            // const userData = await unitOfWork.userService.getCurrentUser();
+            // setUser(userData);
         } catch (error) {
             console.error('Failed to refresh user:', error);
             throw error;
@@ -109,7 +109,7 @@ function useAuth(): UseAuthReturn {
         }
     }, []);
 
-    const updatePreferences = useCallback(async (preferences: Record<string, any>) => {
+    const updatePreferences = useCallback(async (preferences: Record<string, unknown>) => {
         try {
             const result = await unitOfWork.userService.updatePreferences(preferences);
             // Update local user state

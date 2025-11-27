@@ -10,7 +10,7 @@ import axios from 'axios';
 
 export interface IAuthenticationService {
   userLoginOauth(code: string): Promise<ILoginData | null>;
-  getProfile(): Promise<IProfileData>;
+  // getProfile(): Promise<IProfileData>;
   refreshToken(refreshToken: string): Promise<IRefreshTokenResponse>;
   logout(): Promise<ILogoutResponse>;
   userLogout(): Promise<void>;

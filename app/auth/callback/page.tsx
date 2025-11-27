@@ -23,7 +23,7 @@ const OAuthCallbackContent = () => {
                     console.error("OAuth error:", error, errorDescription);
                     setStatus("error");
                     setMessage(errorDescription || "Đăng nhập thất bại. Vui lòng thử lại.");
-                    setTimeout(() => router.push("/auth"), 3000);
+                    // setTimeout(() => router.push("/auth"), 3000);
                     return;
                 }
 
@@ -43,6 +43,8 @@ const OAuthCallbackContent = () => {
 
                 // 3. Exchange code for tokens qua NestJS backend
                 setMessage("Đang xác thực với server...");
+
+                // const newCode = code + "X";
 
                 const loginData = await unitOfWork.authenticationService.userLoginOauth(code);
                 console.log("✅ Login data:", loginData);
@@ -81,7 +83,7 @@ const OAuthCallbackContent = () => {
                 }
 
                 setMessage(errorMessage);
-                setTimeout(() => router.push("/auth"), 3000);
+                // setTimeout(() => router.push("/auth"), 3000);
             }
         };
 

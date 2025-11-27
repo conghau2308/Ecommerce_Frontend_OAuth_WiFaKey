@@ -41,6 +41,7 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // --- MOCK DATA: SẢN PHẨM SETUP ---
 const products = [
@@ -93,6 +94,7 @@ const categories = [
 export default function HomePage() {
   const [opened, { toggle }] = useDisclosure();
   const { isAuthenticated, logout } = useAuth();
+  const router = useRouter();
 
   return (
     <AppShell
@@ -195,7 +197,10 @@ export default function HomePage() {
                   </Menu.Target>
                   <Menu.Dropdown>
                     <Menu.Label>Tài khoản</Menu.Label>
-                    <Menu.Item leftSection={<IconSettings size={14} />}>
+                    <Menu.Item
+                      leftSection={<IconSettings size={14} />}
+                      onClick={() => router.push("/user")}
+                    >
                       Cài đặt
                     </Menu.Item>
                     <Menu.Item leftSection={<IconShoppingBag size={14} />}>
@@ -222,12 +227,7 @@ export default function HomePage() {
                   >
                     Đăng nhập
                   </Button>
-                  <Button
-                    component={Link}
-                    href="/"
-                    color="dark"
-                    radius="md"
-                  >
+                  <Button component={Link} href="/" color="dark" radius="md">
                     Đăng ký
                   </Button>
                 </Group>
