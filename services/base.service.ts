@@ -199,13 +199,15 @@ export class BaseService {
                         success: boolean;
                         data: { access_token: string; refresh_token?: string };
                     }>(
-                        `${authBaseUrl}/refresh`,
+                        `http://localhost:8000/api/auth/refresh`,
                         { refresh_token: loginData.refreshToken },
                         {
                             headers: { 'Content-Type': 'application/json' },
                             withCredentials: true,
                         },
                     );
+
+                    console.log("Refresh response", refreshResponse)
 
                     if (refreshResponse.data?.success && refreshResponse.data.data) {
                         // Update stored tokens

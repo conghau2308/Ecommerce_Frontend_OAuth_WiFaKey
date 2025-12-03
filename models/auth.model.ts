@@ -6,7 +6,7 @@ export interface IUserInfo {
     name?: string;
     picture?: string;
     roles?: string[];
-    preferences?: Record<string, any>;
+    preferences?: Record<string, unknown>;
     createdAt?: string;
     lastLoginAt?: string;
 }
@@ -24,7 +24,7 @@ export interface IProfileData {
     userId: string;
     email: string;
     name: string;
-    preferences?: Record<string, any>;
+    preferences?: Record<string, unknown>;
     lastLoginAt?: string;
 }
 
@@ -33,6 +33,10 @@ export interface IRefreshTokenResponse {
     refresh_token?: string;
     token_type?: string;
     expires_in?: number;
+}
+
+export interface IRefreshResponse {
+    data: IRefreshTokenResponse;
 }
 
 export interface ILogoutResponse {

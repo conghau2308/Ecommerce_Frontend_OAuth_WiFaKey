@@ -1,80 +1,88 @@
 import {
   ILoginData,
   IProfileData,
-  IRefreshTokenResponse,
   ILogoutResponse,
-} from '@/models/auth.model';
-import { AuthStorageService } from '@/utils/auth-storage.service';
-import { BaseService } from '../base.service';
-import axios from 'axios';
+  IRefreshResponse,
+} from "@/models/auth.model";
+import { AuthStorageService } from "@/utils/auth-storage.service";
+import { BaseService } from "../base.service";
+import axios from "axios";
 
 export interface IAuthenticationService {
   userLoginOauth(code: string): Promise<ILoginData | null>;
   // getProfile(): Promise<IProfileData>;
-  refreshToken(refreshToken: string): Promise<IRefreshTokenResponse>;
+  refreshToken(refreshToken: string): Promise<IRefreshResponse | null>;
   logout(): Promise<ILogoutResponse>;
   userLogout(): Promise<void>;
   initiateOAuthLogin(): void;
 }
 
-export class AuthenticationService extends BaseService implements IAuthenticationService {
+export class AuthenticationService
+  extends BaseService
+  implements IAuthenticationService
+{
   public constructor() {
-    super('auth');
+    super("auth");
   }
 
   /**
    * Initiate OAuth login by redirecting to backend OAuth2 authorize endpoint
    */
   public initiateOAuthLogin(): void {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return;
     }
 
     // Get backend base URL - MUST be set to backend server (e.g., http://localhost:8080)
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
     if (!baseUrl) {
       console.error(
-        'NEXT_PUBLIC_BASE_URL is not set! Please create .env.local file with:\n' +
-        'NEXT_PUBLIC_BASE_URL=http://localhost:8080\n' +
-        'NEXT_PUBLIC_PREFIX_API=\n' +
-        'NEXT_PUBLIC_OAUTH_CLIENT_ID=95ea7a03-43d6-44d0-86ce-505abe444951'
+        "NEXT_PUBLIC_BASE_URL is not set! Please create .env.local file with:\n" +
+          "NEXT_PUBLIC_BASE_URL=http://localhost:8080\n" +
+          "NEXT_PUBLIC_PREFIX_API=\n" +
+          "NEXT_PUBLIC_OAUTH_CLIENT_ID=95ea7a03-43d6-44d0-86ce-505abe444951"
       );
       alert(
-        'Configuration error: NEXT_PUBLIC_BASE_URL is not set.\n' +
-        'Please check your .env.local file and ensure it points to the backend server (e.g., http://localhost:8080)'
+        "Configuration error: NEXT_PUBLIC_BASE_URL is not set.\n" +
+          "Please check your .env.local file and ensure it points to the backend server (e.g., http://localhost:8080)"
       );
       return;
     }
 
     // Ensure baseUrl is a valid absolute URL
     let backendBaseUrl = baseUrl.trim();
-    if (!backendBaseUrl.startsWith('http://') && !backendBaseUrl.startsWith('https://')) {
+    if (
+      !backendBaseUrl.startsWith("http://") &&
+      !backendBaseUrl.startsWith("https://")
+    ) {
       console.error(
         `Invalid NEXT_PUBLIC_BASE_URL: "${backendBaseUrl}". It must start with http:// or https://`
       );
       alert(
         `Configuration error: NEXT_PUBLIC_BASE_URL must be a valid URL starting with http:// or https://\n` +
-        `Current value: "${backendBaseUrl}"`
+          `Current value: "${backendBaseUrl}"`
       );
       return;
     }
 
     // Remove trailing slash from baseUrl
-    backendBaseUrl = backendBaseUrl.replace(/\/$/, '');
+    backendBaseUrl = backendBaseUrl.replace(/\/$/, "");
 
-    const prefix = (process.env.NEXT_PUBLIC_PREFIX_API || '').trim().replace(/^\/|\/$/g, '');
+    const prefix = (process.env.NEXT_PUBLIC_PREFIX_API || "")
+      .trim()
+      .replace(/^\/|\/$/g, "");
 
     // Build OAuth2 authorize endpoint: /oauth2/authorize
-    const pathSegments = [prefix, 'oauth2', 'authorize'].filter(Boolean);
-    const path = pathSegments.join('/');
+    const pathSegments = [prefix, "oauth2", "authorize"].filter(Boolean);
+    const path = pathSegments.join("/");
     const authorizeUrl = `${backendBaseUrl}/${path}`;
 
     // OAuth2 parameters
-    const clientId = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID || 'ecommerce-app';
+    const clientId = process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID || "ecommerce-app";
     const redirectUri = `${window.location.origin}/auth/callback`;
-    const scope = 'openid profile';
-    const responseType = 'code';
+    const scope = "openid profile";
+    const responseType = "code";
 
     // Generate state for CSRF protection
     const state = this.generateState();
@@ -89,7 +97,7 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
     });
 
     const fullUrl = `${authorizeUrl}?${params.toString()}`;
-    console.log('Redirecting to OAuth2 authorize endpoint:', fullUrl);
+    console.log("Redirecting to OAuth2 authorize endpoint:", fullUrl);
     window.location.href = fullUrl;
   }
 
@@ -98,7 +106,7 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
    */
   private generateState(): string {
     const array = new Uint8Array(32);
-    if (typeof window !== 'undefined' && window.crypto) {
+    if (typeof window !== "undefined" && window.crypto) {
       window.crypto.getRandomValues(array);
     } else {
       // Fallback for environments without crypto API
@@ -106,7 +114,9 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
         array[i] = Math.floor(Math.random() * 256);
       }
     }
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+      ""
+    );
   }
 
   /**
@@ -115,12 +125,13 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
   public async userLoginOauth(code: string): Promise<ILoginData | null> {
     try {
       // Gọi trực tiếp với axios, không qua BaseService
-      const customBaseUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || 'http://localhost:8000';
+      const customBaseUrl =
+        process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "http://localhost:8000";
       const response = await axios.post<ILoginData>(
         `${customBaseUrl}/api/auth/login`,
         { code },
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
           withCredentials: true,
         }
       );
@@ -135,7 +146,7 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
       this.clearTokenCache();
       return loginData;
     } catch (error) {
-      console.error('OAuth login failed', error);
+      console.error("OAuth login failed", error);
       await AuthStorageService.clearAll();
       return null;
     }
@@ -147,7 +158,7 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
    */
   public async getProfile(): Promise<IProfileData> {
     return this.GET<IProfileData>({
-      url: 'profile',
+      url: "profile",
     });
   }
 
@@ -155,29 +166,47 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
    * Refresh access token
    * POST /auth/refresh
    */
-  public async refreshToken(refreshToken: string): Promise<IRefreshTokenResponse> {
-    const response = await this.POST<{ success: boolean; data: IRefreshTokenResponse }>({
-      url: 'refresh',
-      body: { refresh_token: refreshToken },
-      includeAuth: false,
-    });
 
-    if (response && response.data) {
-      // Update stored tokens
-      const currentData = await AuthStorageService.getLoginData();
-      if (currentData) {
-        const updatedData: ILoginData = {
-          ...currentData,
-          accessToken: response.data.access_token,
-          refreshToken: response.data.refresh_token || currentData.refreshToken,
-        };
-        await AuthStorageService.setLoginData(updatedData);
-        this.clearTokenCache(); // Clear cache to force refresh
+  public async refreshToken(
+    refreshToken: string
+  ): Promise<IRefreshResponse | null> {
+    try {
+      // Gọi trực tiếp với axios, không qua BaseService
+      const customBaseUrl =
+        process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || "http://localhost:8000";
+      const response = await axios.post<IRefreshResponse>(
+        `${customBaseUrl}/api/auth/refresh`,
+        { refresh_token: refreshToken },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Refresh Data: ", response);
+
+      if (response && response.data) {
+        // Update stored tokens
+        const currentData = await AuthStorageService.getLoginData();
+        if (currentData) {
+          const updatedData: ILoginData = {
+            ...currentData,
+            accessToken: response.data.data.access_token,
+            refreshToken:
+              response.data.data.refresh_token || currentData.refreshToken,
+          };
+          await AuthStorageService.setLoginData(updatedData);
+          this.clearTokenCache(); // Clear cache to force refresh
+        }
+        return response.data;
       }
-      return response.data;
-    }
 
-    throw new Error('Failed to refresh token');
+      return null;
+    } catch (error) {
+      console.error("OAuth refresh token failed", error);
+      await AuthStorageService.clearAll();
+      return null;
+    }
   }
 
   /**
@@ -187,7 +216,7 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
   public async logout(): Promise<ILogoutResponse> {
     try {
       const response = await this.POST<ILogoutResponse>({
-        url: 'logout',
+        url: "logout",
       });
 
       // Clear local storage
@@ -195,7 +224,7 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
       this.clearTokenCache();
 
       // If IdP logout URL is provided, redirect to it
-      if (response.idpLogoutUrl && typeof window !== 'undefined') {
+      if (response.idpLogoutUrl && typeof window !== "undefined") {
         window.location.href = response.idpLogoutUrl;
         return response;
       }
@@ -223,7 +252,7 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
    */
   public async healthCheck(): Promise<{ status: string; timestamp: string }> {
     return this.GET_WITHOUT_TOKEN<{ status: string; timestamp: string }>({
-      url: 'health',
+      url: "health",
     });
   }
 }

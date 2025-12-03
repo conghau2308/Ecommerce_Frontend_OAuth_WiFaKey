@@ -238,6 +238,7 @@ export default function HomePage() {
       </AppShell.Header>
 
       <AppShell.Main>
+        <Title className="justify-center items-center flex-row flex" size={15} fw={500}>--- Truy cập đường dẫn auth/refresh để test refresh token ---</Title>
         {/* --- HERO SECTION (Full Width) --- */}
         <Box bg="gray.1" py={80}>
           <Container size="xl">

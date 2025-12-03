@@ -83,7 +83,8 @@ export class UserService extends BaseService implements IUserService {
 
     console.log("ACCESS TOKEN FRONTEND:", token);
 
-    const response = await axios.get<UserInfoResponse>(
+    try {
+      const response = await axios.get<UserInfoResponse>(
       `${customBaseUrl}/api/users/me`,
       {
         headers: {
@@ -95,6 +96,11 @@ export class UserService extends BaseService implements IUserService {
     );
 
     return response.data; // 👈 trả đúng IUserInfo
+    } catch(error) {
+      // handleInterceptorError(error)
+      console.log(error);
+      throw error;
+    }
   }
 
   /**

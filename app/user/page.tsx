@@ -55,7 +55,6 @@ export default function GeneralProfilePage() {
           <label className="text-sm font-medium text-gray-700">Họ và tên</label>
           <input
             type="text"
-            defaultValue="Nguyễn Văn A"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition"
             value={userInfo?.name}
           />
@@ -66,12 +65,11 @@ export default function GeneralProfilePage() {
           </label>
           <input
             type="text"
-            defaultValue="Zen Master"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition"
             value={userInfo?.name}
           />
         </div>
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Email</label>
           <input
             type="email"
@@ -82,8 +80,8 @@ export default function GeneralProfilePage() {
           <p className="text-xs text-gray-400">
             Liên hệ CSKH để thay đổi email
           </p>
-        </div>
-        <div className="space-y-2">
+        </div> */}
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">
             Số điện thoại
           </label>
@@ -92,15 +90,15 @@ export default function GeneralProfilePage() {
             defaultValue="0909 123 456"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition"
           />
-        </div>
-        <div className="space-y-2">
+        </div> */}
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">Giới tính</label>
           <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition bg-white">
             <option>Nam</option>
             <option>Nữ</option>
             <option>Khác</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
       <div className="mt-8 flex justify-end space-x-4">
